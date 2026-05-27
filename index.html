@@ -1,10 +1,4 @@
-import os
-from weasyprint import HTML
-
-# Create output directory if it doesn't exist
-os.makedirs("/mnt/user-data/outputs", exist_ok=True)
-
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -883,24 +877,16 @@ networks:
         <pre class="code-body"># Créer le volume requis
 docker volume create portainer_data
 
-# Lancer le container Portainer CE
+# Lancer le container Portainer
 docker run -d \
   -p 9000:9000 \
   --name administration_portainer \
   --restart=always \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v portainer_data:/data \
-  portainer/portainer-ce</pre>
+  portainer/portainer-ce:latest</pre>
     </div>
-
-    <h2 class="section-title">Navigation dans l'interface web</h2>
-    <p>Ouvrez votre navigateur et accédez à : <strong>http://localhost:9000</strong></p>
-    <ul>
-        <li><strong>Dashboard :</strong> Vue globale sur les ressources de votre machine hôte.</li>
-        <li><strong>Containers :</strong> Démarrer, arrêter, cloner, supprimer et inspecter vos conteneurs d'un clic.</li>
-        <li><strong>Images :</strong> Parcourir et télécharger de nouvelles images sans passer par le terminal.</li>
-        <li><strong>Console :</strong> Accéder directement au terminal d'un container en cours d'exécution directement depuis votre navigateur.</li>
-    </ul>
+    <p>Ouvrez votre navigateur et accédez à l'adresse suivante : <strong><code>http://localhost:9000</code></strong> pour configurer votre compte administrateur.</p>
 
 
     <div class="chapter-header">
@@ -912,35 +898,29 @@ docker run -d \
     
     <div class="box box-danger">
         <div class="box-title">❌ Erreur : Cannot connect to the Docker daemon</div>
-        <strong>Cause :</strong> Le service Docker en arrière-plan n'est pas actif sur votre système.
-        <br><strong>Solution :</strong> Lancez la commande : <span class="table-code">sudo service docker start</span>
+        <strong>Cause :</strong> Le service Docker n'est pas actif en arrière-plan sur votre machine.<br>
+        <strong>Solution :</strong> Relancez le démon Docker via la commande : <code>sudo service docker start</code>.
     </div>
 
-    <div class="box box-danger">
-        <div class="box-title">❌ Erreur : Port already in use</div>
-        <strong>Cause :</strong> Le port extérieur choisi est déjà réservé par un autre service de l'hôte.
-        <br><strong>Solution :</strong> Modifiez le port de gauche lors du run (ex : basculez de <span class="table-code">-p 80:80</span> vers <span class="table-code">-p 8085:80</span>).
-    </div>
-
-    <div class="box box-danger">
-        <div class="box-title">❌ Erreur : No space left on device</div>
-        <strong>Cause :</strong> Accumulation excessive d'images obsolètes et de containers inactifs.
-        <br><strong>Solution :</strong> Purgez l'espace de stockage inutilisé.
+    <div class="box box-warn">
+        <div class="box-title">⚠️ Erreur : Port already in use</div>
+        <strong>Cause :</strong> Le port extérieur choisi est déjà occupé par un autre processus de votre hôte.<br>
+        <strong>Solution :</strong> Modifiez le port hôte (à gauche du signe deux-points), par exemple : <code>-p 8085:80</code>.
     </div>
 
     <h2 class="section-title">Les 5 Règles d'Or du bon praticien</h2>
-    <ol>
-        <li><strong>Nommez systématiquement</strong> vos instances avec le flag <span class="table-code">--name</span>.</li>
-        <li><strong>Ne stockez aucune donnée sensible en dur</strong> dans vos conteneurs ; externalisez-les dans des volumes.</li>
-        <li><strong>Évitez les mots de passe clairs</strong> dans vos scripts publics. Adoptez des fichiers masqués d'environnement <span class="table-code">.env</span>.</li>
-        <li><strong>Utilisez Docker Compose</strong> dès lors que votre projet comporte au moins 2 architectures distinctes.</li>
-        <li><strong>Garantissez la résilience</strong> de vos applications majeures avec la politique de disponibilité <span class="table-code">--restart always</span>.</li>
-    </ol>
+    <ul>
+        <li><strong>Règle 1 :</strong> Utilisez toujours l'option <span class="table-code">--name</span> pour identifier facilement vos containers.</li>
+        <li><strong>Règle 2 :</strong> Ne stockez aucun fichier précieux directement dans le container. Externalisez tout dans un volume.</li>
+        <li><strong>Règle 3 :</strong> N'écrivez jamais de mots de passe en dur. Utilisez des variables d'environnement.</li>
+        <li><strong>Règle 4 :</strong> Adoptez Docker Compose dès que votre projet nécessite plus d'un container.</li>
+        <li><strong>Règle 5 :</strong> Assurez la continuité de service avec la politique <span class="table-code">--restart always</span>.</li>
+    </ul>
 
     <h2 class="section-title">Commandes de nettoyage utiles</h2>
     <div class="code-block">
-        <div class="code-header">Nettoyage global de l'espace disque</div>
-        <pre class="code-body"># Supprimer tous les éléments inutilisés d'un coup (containers arrêtés, images orphelines, réseaux)
+        <div class="code-header">Terminal — Maintenance</div>
+        <pre class="code-body"># Supprimer tout ce qui est inutilisé (containers arrêtés, images orphelines)
 docker system prune -a --volumes
 
 # Analyser l'espace disque consommé par Docker
@@ -948,20 +928,12 @@ docker system df</pre>
     </div>
 
     <div class="signature-section">
-        <div class="signature-title">🐳 Guide de Conteneurisation Simplifié</div>
-        <div class="signature-sub">Conçu avec passion pour la communauté Open Source</div>
-        <div class="signature-author">— Wexlor —</div>
-        <div class="signature-meta">Version 1.0 | Mai 2026 | Dakar, Sénégal<br>Partage et distribution libre encouragés à des fins éducatives</div>
+        <div class="signature-title">🐳 Fin du Guide de Formation</div>
+        <div class="signature-sub">Félicitations, vous maîtrisez maintenant les bases fondamentales de Docker !</div>
+        <div class="signature-author">— Conçu par Wexlor —</div>
+        <div class="signature-meta">Document Libre de Droits — Version 1.0 — Mai 2026</div>
     </div>
 
 </body>
 </html>
-"""
 
-# Write HTML content to file
-with open("/mnt/user-data/outputs/guide_docker.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-# Render HTML to PDF via WeasyPrint
-HTML("/mnt/user-data/outputs/guide_docker.html").write_pdf("/mnt/user-data/outputs/Guide_Docker_Complet.pdf")
-print("PDF fully compiled.")
