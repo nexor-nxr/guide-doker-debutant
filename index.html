@@ -1,0 +1,967 @@
+import os
+from weasyprint import HTML
+
+# Create output directory if it doesn't exist
+os.makedirs("/mnt/user-data/outputs", exist_ok=True)
+
+html_content = """<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Guide Docker pour Débutants</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+            @top-right {
+                content: "Page " counter(page);
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                color: #718096;
+            }
+            @top-left {
+                content: "🐳 Guide Docker pour Débutants";
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                font-weight: bold;
+                color: #1a365d;
+            }
+            @bottom-center {
+                content: "© 2026 Wexlor — Guide Docker v1.0 — Document Pédagogique Libre";
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 7.5pt;
+                color: #a0aec0;
+            }
+        }
+
+        @page:first {
+            margin: 0;
+            background-color: #0d3b66;
+            @top-right { content: normal; }
+            @top-left { content: normal; }
+            @bottom-center { content: normal; }
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+
+        /* --- Page de Couverture --- */
+        .cover {
+            page-break-after: always;
+            height: 297mm;
+            position: relative;
+            background-color: #0d3b66;
+            color: #ffffff;
+            overflow: hidden;
+            padding: 40mm 20mm 20mm 20mm;
+            text-align: center;
+        }
+
+        .cover-circle-1 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background-color: #0b3460;
+            top: -100px;
+            right: -100px;
+            z-index: 1;
+        }
+
+        .cover-circle-2 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-color: #0a2e55;
+            bottom: -50px;
+            left: -100px;
+            z-index: 1;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .cover-icon {
+            font-size: 65pt;
+            margin-bottom: 20px;
+            background: #0e4080;
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 2px solid #00b4d8;
+        }
+
+        .cover-title {
+            font-size: 42pt;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+        }
+
+        .cover-subtitle {
+            font-size: 22pt;
+            font-weight: 600;
+            color: #00b4d8;
+            margin: 0 0 30px 0;
+        }
+
+        .cover-description {
+            font-size: 13pt;
+            color: #aaccff;
+            margin: 0 auto 40mm auto;
+            max-width: 500px;
+            font-weight: 300;
+        }
+
+        .cover-divider {
+            width: 150px;
+            height: 3px;
+            background-color: #00b4d8;
+            margin: 0 auto 25px auto;
+        }
+
+        .cover-author {
+            font-size: 13pt;
+            font-style: italic;
+            color: #e2e8f0;
+            margin: 0 0 5px 0;
+        }
+
+        .cover-version {
+            font-size: 10.5pt;
+            color: #88aadd;
+        }
+
+        .cover-footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8.5pt;
+            color: #667799;
+            padding: 0 20px;
+        }
+
+        /* --- Table des matières --- */
+        .toc-page {
+            page-break-after: always;
+            padding-top: 10mm;
+        }
+
+        /* --- Styles Généraux --- */
+        h1 {
+            font-size: 20pt;
+            color: #0d3b66;
+            border-bottom: 3px solid #00b4d8;
+            padding-bottom: 6px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            page-break-after: avoid;
+        }
+
+        .chapter-header {
+            background-color: #e8f0fe;
+            border-left: 6px solid #1a73e8;
+            padding: 15px 20px;
+            margin-top: 35px;
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+        }
+
+        .chapter-header h2 {
+            margin: 0;
+            font-size: 16pt;
+            color: #0d3b66;
+        }
+
+        .chapter-num {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a73e8;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        h2.section-title {
+            font-size: 14pt;
+            color: #1a73e8;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            page-break-after: avoid;
+        }
+
+        h3.subsection-title {
+            font-size: 11.5pt;
+            color: #0d3b66;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 12px 0;
+            text-align: justify;
+        }
+
+        ul {
+            margin: 0 0 15px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* --- Tableaux --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px 0;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #0d3b66;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 12px;
+            border: 1px solid #0d3b66;
+        }
+
+        td {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+
+        .table-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #1a73e8;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* --- Blocs de Code --- */
+        .code-block {
+            background-color: #1e1e2e;
+            border-left: 4px solid #00b4d8;
+            border-radius: 0 6px 6px 0;
+            margin: 15px 0 25px 0;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .code-header {
+            background-color: #2a2a3e;
+            color: #00b4d8;
+            font-size: 8.5pt;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        .code-body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9pt;
+            color: #cdd6f4;
+            padding: 12px 14px;
+            margin: 0;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* --- Boîtes d'alerte / info --- */
+        .box {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 15px 0 25px 0;
+            border-left: 4px solid;
+            page-break-inside: avoid;
+            font-size: 9.5pt;
+        }
+
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 10pt;
+        }
+
+        .box-info {
+            background-color: #e8f0fe;
+            border-color: #1a73e8;
+            color: #0d3b66;
+        }
+        .box-info .box-title { color: #1a73e8; }
+
+        .box-tip {
+            background-color: #e8f8f0;
+            border-color: #2ecc71;
+            color: #1a4731;
+        }
+        .box-tip .box-title { color: #2ecc71; }
+
+        .box-warn {
+            background-color: #fef9e7;
+            border-color: #f39c12;
+            color: #7a3b00;
+        }
+        .box-warn .box-title { color: #f39c12; }
+
+        .box-danger {
+            background-color: #fdecea;
+            border-color: #e74c3c;
+            color: #b71c1c;
+        }
+        .box-danger .box-title { color: #e74c3c; }
+
+        /* --- TOC List --- */
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+        }
+
+        .toc-chapter {
+            font-weight: bold;
+            color: #0d3b66;
+            font-size: 12pt;
+        }
+
+        .toc-sections {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 4px;
+            font-size: 10pt;
+            color: #4a5568;
+        }
+
+        .toc-sections li {
+            margin-bottom: 3px;
+        }
+
+        /* --- Fin / Signature --- */
+        .signature-section {
+            background-color: #0d3b66;
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 4px solid #00b4d8;
+            border-bottom: 4px solid #00b4d8;
+            page-break-inside: avoid;
+        }
+
+        .signature-title {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .signature-sub {
+            font-size: 11pt;
+            color: #aaccff;
+            margin-bottom: 15px;
+        }
+
+        .signature-author {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #00b4d8;
+            margin-bottom: 10px;
+        }
+
+        .signature-meta {
+            font-size: 8.5pt;
+            color: #667799;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cover">
+        <div class="cover-circle-1"></div>
+        <div class="cover-circle-2"></div>
+        <div class="cover-content">
+            <div class="cover-icon">🐳</div>
+            <h1 class="cover-title">Guide Docker</h1>
+            <div class="cover-subtitle">pour Débutants</div>
+            <p class="cover-description">Installer, comprendre et utiliser la conteneurisation pas à pas de manière simple et structurée.</p>
+            <div class="cover-divider"></div>
+            <div class="cover-author">Rédigé par Wexlor</div>
+            <div class="cover-version">Version 1.0 — Mai 2026</div>
+        </div>
+        <div class="cover-footer">
+            Document de formation — Distribution libre à des fins éducatives et communautaires
+        </div>
+    </div>
+
+    <div class="toc-page">
+        <h1>Table des matières</h1>
+        <ul class="toc-list">
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 1 — Introduction à Docker</span>
+                <ul class="toc-sections">
+                    <li>› Qu'est-ce que Docker ?</li>
+                    <li>› Pourquoi utiliser Docker ?</li>
+                    <li>› Concepts fondamentaux</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 2 — Installation</span>
+                <ul class="toc-sections">
+                    <li>› Prérequis système</li>
+                    <li>› Installation sur Debian / Ubuntu</li>
+                    <li>› Vérification de l'installation</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 3 — Commandes essentielles</span>
+                <ul class="toc-sections">
+                    <li>› Gestion des images</li>
+                    <li>› Gestion des containers</li>
+                    <li>› Commandes de diagnostic</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 4 — Zoom sur la commande "docker run"</span>
+                <ul class="toc-sections">
+                    <li>› Syntaxe globale</li>
+                    <li>› Les options indispensables du quotidien</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 5 — Volumes & Réseaux</span>
+                <ul class="toc-sections">
+                    <li>› Les volumes Docker (persistance)</li>
+                    <li>› Les réseaux Docker (communication)</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 6 — Multi-containers avec Docker Compose</span>
+                <ul class="toc-sections">
+                    <li>› Introduction à Compose</li>
+                    <li>› Structure d'un fichier compose.yml</li>
+                    <li>› Commandes Compose majeures</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 7 — Portainer — Interface graphique</span>
+                <ul class="toc-sections">
+                    <li>› Installation de Portainer</li>
+                    <li>› Navigation dans l'interface web</li>
+                </ul>
+            </li>
+            <li class="toc-item">
+                <span class="toc-chapter">Chapitre 8 — Dépannage & Bonnes pratiques</span>
+                <ul class="toc-sections">
+                    <li>› Résolution des erreurs courantes</li>
+                    <li>› Les 5 Règles d'Or du bon praticien</li>
+                    <li>› Commandes de nettoyage et ressources</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 1</div>
+        <h2>Introduction à Docker</h2>
+    </div>
+    
+    <h2 class="section-title">Qu'est-ce que Docker ?</h2>
+    <p>Docker est une plateforme open source qui permet de créer, déployer et exécuter des applications dans des <strong>containers</strong>. Un container est un environnement isolé, étanche et léger qui englobe tout le nécessaire pour qu'une application fonctionne : le code, les bibliothèques, les dépendances système et la configuration.</p>
+    
+    <div class="box box-info">
+        <div class="box-title">ℹ Info</div>
+        Imaginez un container Docker comme une boîte hermétique : peu importe la machine sur laquelle vous déplacez cette boîte, l'application s'exécutera de manière strictement identique.
+    </div>
+
+    <h3 class="subsection-title">La différence fondamentale avec une Machine Virtuelle (VM)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Critère</th>
+                <th>Machine Virtuelle (VM)</th>
+                <th>Container Docker</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Architecture</strong></td>
+                <td>Système complet simulé avec son propre OS (lourd)</td>
+                <td>Partage le noyau de l'OS hôte (très léger)</td>
+            </tr>
+            <tr>
+                <td><strong>Poids standard</strong></td>
+                <td>Plusieurs Giga-octets (Go)</td>
+                <td>Quelques Méga-octets (Mo)</td>
+            </tr>
+            <tr>
+                <td><strong>Vitesse de démarrage</strong></td>
+                <td>Quelques minutes</td>
+                <td>Quelques secondes</td>
+            </tr>
+            <tr>
+                <td><strong>Ressources (CPU/RAM)</strong></td>
+                <td>Réservées et bloquées à l'avance</td>
+                <td>Allouées dynamiquement selon les besoins</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-title">Pourquoi utiliser Docker ?</h2>
+    <ul>
+        <li><strong>Portabilité absolue :</strong> Fonctionne à l'identique sur Linux, Windows et macOS.</li>
+        <li><strong>Isolation totale :</strong> Plus de conflits de versions entre vos applications (ex: faire tourner PHP 7 et PHP 8 en même temps).</li>
+        <li><strong>Reproductibilité :</strong> Élimine le fameux problème "Mais ça marchait sur ma machine !".</li>
+        <li><strong>Écosystème riche :</strong> Des milliers d'images officielles prêtes à l'emploi sur le Docker Hub.</li>
+    </ul>
+
+    <h2 class="section-title">Concepts fondamentaux</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">Concept</th>
+                <th>Définition simple</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>🖼️ Image</strong></td>
+                <td>Le modèle en lecture seule ou le "plan" de construction. C'est l'état figé de l'application.</td>
+            </tr>
+            <tr>
+                <td><strong>📦 Container</strong></td>
+                <td>L'instance vivante et en cours d'exécution d'une image. On peut créer plusieurs containers à partir d'un seul plan.</td>
+            </tr>
+            <tr>
+                <td><strong>🏪 Docker Hub</strong></td>
+                <td>Le catalogue officiel en ligne (registry) où l'on télécharge les images pré-construites.</td>
+            </tr>
+            <tr>
+                <td><strong>📁 Volume</strong></td>
+                <td>Espace de stockage externe persistant qui survit à l'arrêt ou à la suppression du container.</td>
+            </tr>
+            <tr>
+                <td><strong>🌐 Réseau</strong></td>
+                <td>Espace d'isolation permettant aux containers de communiquer entre eux de manière sécurisée.</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 2</div>
+        <h2>Installation</h2>
+    </div>
+
+    <h2 class="section-title">Prérequis système</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">Élément</th>
+                <th>Exigence minimale</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Système</strong></td>
+                <td>Debian 10+ / Ubuntu 20.04+ (ou dérivés comme MX Linux)</td>
+            </tr>
+            <tr>
+                <td><strong>Ressources</strong></td>
+                <td>2 Go de RAM minimum (4 Go recommandé) et 10 Go d'espace disque disponible</td>
+            </tr>
+            <tr>
+                <td><strong>Droits</strong></td>
+                <td>Accès utilisateur avec privilèges <span class="table-code">sudo</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-title">Installation sur Debian / Ubuntu</h2>
+    
+    <h3 class="subsection-title">Étape 1 — Mise à jour et dépendances</h3>
+    <div class="code-block">
+        <div class="code-header">Terminal</div>
+        <pre class="code-body">sudo apt update && sudo apt upgrade -y
+sudo apt install -y ca-certificates curl gnupg lsb-release</pre>
+    </div>
+
+    <h3 class="subsection-title">Étape 2 — Ajout de la clé GPG officielle Docker</h3>
+    <div class="code-block">
+        <div class="code-header">Terminal</div>
+        <pre class="code-body">sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg</pre>
+    </div>
+
+    <h3 class="subsection-title">Étape 3 — Configuration du dépôt</h3>
+    <div class="code-block">
+        <div class="code-header">Terminal</div>
+        <pre class="code-body">echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update</pre>
+    </div>
+
+    <h3 class="subsection-title">Étape 4 — Installation du moteur Docker Engine</h3>
+    <div class="code-block">
+        <div class="code-header">Terminal</div>
+        <pre class="code-body">sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</pre>
+    </div>
+
+    <h2 class="section-title">Vérification de l'installation</h2>
+    <div class="code-block">
+        <div class="code-header">Terminal — Test</div>
+        <pre class="code-body">sudo docker run hello-world</pre>
+    </div>
+    
+    <div class="box box-tip">
+        <div class="box-title">✓ Conseil : Utiliser Docker sans sudo (Recommandé)</div>
+        Par défaut, Docker requiert les privilèges root. Pour l'exécuter avec votre utilisateur classique, tapez :
+        <br><strong>sudo usermod -aG docker $USER && newgrp docker</strong>
+    </div>
+
+    <div class="box box-warn">
+        <div class="box-title">⚠ Attention</div>
+        Déconnectez-vous puis reconnectez-vous de votre session système pour appliquer pleinement l'adhésion au groupe.
+    </div>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 3</div>
+        <h2>Commandes essentielles</h2>
+    </div>
+    <p>Voici l'ensemble des commandes indispensables au quotidien pour manipuler sereinement vos environnements.</p>
+
+    <h2 class="section-title">Gestion des images</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">Commande</th>
+                <th>Description / Utilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="table-code">docker images</span></td>
+                <td>Lister toutes les images téléchargées localement.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker pull nginx</span></td>
+                <td>Télécharger l'image Nginx depuis le Docker Hub sans la lancer.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker rmi nginx</span></td>
+                <td>Supprimer une image locale devenue inutile.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker image prune</span></td>
+                <td>Nettoyer les images intermédiaires ou orphelines.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-title">Gestion des containers</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">Commande</th>
+                <th>Description / Utilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="table-code">docker ps</span></td>
+                <td>Lister uniquement les containers en cours d'exécution.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker ps -a</span></td>
+                <td>Lister tous les containers (actifs ET arrêtés).</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker stop mon_container</span></td>
+                <td>Arrêter proprement un container actif.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker start mon_container</span></td>
+                <td>Relancer un container précédemment stoppé.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker rm mon_container</span></td>
+                <td>Supprimer définitivement un container arrêté.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker rm -f mon_container</span></td>
+                <td>Forcer la suppression d'un container en cours d'exécution.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 class="section-title">Commandes de diagnostic</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">Commande</th>
+                <th>Description / Utilité</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="table-code">docker logs mon_container</span></td>
+                <td>Afficher la console et la sortie standard de l'application.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker logs -f mon_container</span></td>
+                <td>Suivre les flux de logs en temps réel (mode "follow").</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker stats</span></td>
+                <td>Suivre la consommation RAM / CPU de chaque élément.</td>
+            </tr>
+            <tr>
+                <td><span class="table-code">docker exec -it mon_container bash</span></td>
+                <td>Ouvrir une session terminal interactive à l'intérieur du container.</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 4</div>
+        <h2>Zoom sur la commande "docker run"</h2>
+    </div>
+    
+    <h2 class="section-title">Syntaxe globale</h2>
+    <p>La commande <span class="table-code">docker run</span> instancie et démarre un container. Sa syntaxe s'organise ainsi :</p>
+    <div class="code-block">
+        <div class="code-header">Structure</div>
+        <pre class="code-body">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</pre>
+    </div>
+
+    <h2 class="section-title">Les options indispensables du quotidien</h2>
+    <p>D'après les spécifications techniques officielles de Docker, voici les paramètres clés à maîtriser :</p>
+    
+    <ul>
+        <li><strong><span class="table-code">-d</span> ou <span class="table-code">--detach</span> :</strong> Exécute le container en tâche de fond (arrière-plan) et affiche uniquement son ID. Permet de garder la main sur votre terminal.</li>
+        <li><strong><span class="table-code">-p</span> ou <span class="table-code">--publish</span> :</strong> Publie un port du container sur l'hôte. Format : <span class="table-code">-p port_machine_hote:port_container</span>. Essentiel pour rendre un serveur web accessible.</li>
+        <li><strong><span class="table-code">--name string</span> :</strong> Assigne un nom personnalisé et intelligible au container au lieu d'un nom généré aléatoirement.</li>
+        <li><strong><span class="table-code">-e</span> ou <span class="table-code">--env list</span> :</strong> Initialise des variables d'environnement indispensables pour configurer l'application (ex: mots de passe, clés d'API).</li>
+        <li><strong><span class="table-code">-v</span> ou <span class="table-code">--volume list</span> :</strong> Monte un dossier ou un volume persistant afin de lier le stockage de l'hôte à celui du container.</li>
+        <li><strong><span class="table-code">--restart string</span> :</strong> Définit la politique de redémarrage (ex: <span class="table-code">always</span> pour relancer le container automatiquement si le système redémarre ou plante).</li>
+        <li><strong><span class="table-code">--rm</span> :</strong> Supprime automatiquement le container et ses volumes anonymes dès qu'il s'arrête (idéal pour faire des tests propres).</li>
+        <li><strong><span class="table-code">-it</span> (<span class="table-code">--interactive</span> + <span class="table-code">--tty</span>) :</strong> Maintient l'entrée standard ouverte et alloue un pseudo-terminal, requis pour utiliser des interpréteurs de commandes (comme <span class="table-code">bash</span> ou <span class="table-code">sh</span>).</li>
+    </ul>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 5</div>
+        <h2>Volumes & Réseaux</h2>
+    </div>
+
+    <h2 class="section-title">Les volumes Docker (persistance)</h2>
+    <p>Par défaut, un container est éphémère (volatile). Si vous écrivez des fichiers dedans et que vous le supprimez, les données disparaissent. Les volumes externalisent et sécurisent vos fichiers.</p>
+
+    <div class="code-block">
+        <div class="code-header">Exemple pratique : Déploiement d'une base de données persistante</div>
+        <pre class="code-body"># 1. Création d'un volume nommé
+docker volume create mysql_data
+
+# 2. Lancement du container relié au volume
+docker run -d \
+  --name base_donnees \
+  -e MYSQL_ROOT_PASSWORD=mon_mot_de_passe \
+  -v mysql_data:/var/lib/mysql \
+  mysql:8</pre>
+    </div>
+    <p>Ici, même si le container est détruit, vos tables de données restent sauvegardées au sein du volume <span class="table-code">mysql_data</span>.</p>
+
+    <h2 class="section-title">Les réseaux Docker (communication)</h2>
+    <p>Les réseaux isolent les flux. En créant un réseau personnalisé, vos containers s'identifient par leur simple nom.</p>
+    <div class="code-block">
+        <div class="code-header">Exemple d'isolation réseau</div>
+        <pre class="code-body"># Création d'un réseau de type bridge
+docker network create reseau_interne
+
+# Connexion d'un container au réseau
+docker run -d --name serveur_web --network reseau_interne nginx</pre>
+    </div>
+    <div class="box box-tip">
+        <div class="box-title">✓ Conseil</div>
+        Deux containers connectés sur le même réseau privé peuvent communiquer en utilisant leurs noms respectifs comme adresse DNS (ex: <span class="table-code">http://serveur_web</span>).
+    </div>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 6</div>
+        <h2>Multi-containers avec Docker Compose</h2>
+    </div>
+    <p>Gérer plusieurs containers à coup de commandes individuelles s'avère vite laborieux. <strong>Docker Compose</strong> permet de centraliser et d'automatiser l'intégralité d'une architecture multi-tiers au sein d'un simple fichier descriptif textuel YAML.</p>
+
+    <h2 class="section-title">Structure d'un fichier compose.yml</h2>
+    <p>Créez un fichier nommé <span class="table-code">docker-compose.yml</span> pour lier un serveur web à sa base de données :</p>
+
+    <div class="code-block">
+        <div class="code-header">docker-compose.yml</div>
+        <pre class="code-body">version: '3.8'
+
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    networks:
+      - reseau_projet
+    restart: always
+
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: secret_password
+      MYSQL_DATABASE: site_production
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - reseau_projet
+
+volumes:
+  db_data:
+
+networks:
+  reseau_projet:</pre>
+    </div>
+
+    <h2 class="section-title">Commandes Compose majeures</h2>
+    <p>Positionnez votre terminal dans le dossier contenant votre fichier de configuration :</p>
+    <ul>
+        <li><strong><span class="table-code">docker compose up -d</span> :</strong> Démarre l'ensemble des containers configurés en arrière-plan. (Télécharge les images si nécessaire).</li>
+        <li><strong><span class="table-code">docker compose ps</span> :</strong> Affiche l'état des services liés au projet en cours.</li>
+        <li><strong><span class="table-code">docker compose logs -f</span> :</strong> Aggrège et affiche les logs de tous les composants en simultané.</li>
+        <li><strong><span class="table-code">docker compose down</span> :</strong> Arrête et détruit proprement les containers et les réseaux créés (les volumes restent préservés).</li>
+    </ul>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 7</div>
+        <h2>Portainer — Interface graphique</h2>
+    </div>
+    <p>Pour les utilisateurs réfractaires aux lignes de commandes, <strong>Portainer</strong> offre une interface web soignée et complète afin de monitorer graphiquement votre écosystème Docker.</p>
+
+    <h2 class="section-title">Installation de Portainer</h2>
+    <div class="code-block">
+        <div class="code-header">Terminal — Déploiement</div>
+        <pre class="code-body"># Créer le volume requis
+docker volume create portainer_data
+
+# Lancer le container Portainer CE
+docker run -d \
+  -p 9000:9000 \
+  --name administration_portainer \
+  --restart=always \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  portainer/portainer-ce</pre>
+    </div>
+
+    <h2 class="section-title">Navigation dans l'interface web</h2>
+    <p>Ouvrez votre navigateur et accédez à : <strong>http://localhost:9000</strong></p>
+    <ul>
+        <li><strong>Dashboard :</strong> Vue globale sur les ressources de votre machine hôte.</li>
+        <li><strong>Containers :</strong> Démarrer, arrêter, cloner, supprimer et inspecter vos conteneurs d'un clic.</li>
+        <li><strong>Images :</strong> Parcourir et télécharger de nouvelles images sans passer par le terminal.</li>
+        <li><strong>Console :</strong> Accéder directement au terminal d'un container en cours d'exécution directement depuis votre navigateur.</li>
+    </ul>
+
+
+    <div class="chapter-header">
+        <div class="chapter-num">Chapitre 8</div>
+        <h2>Dépannage & Bonnes pratiques</h2>
+    </div>
+
+    <h2 class="section-title">Résolution des erreurs courantes</h2>
+    
+    <div class="box box-danger">
+        <div class="box-title">❌ Erreur : Cannot connect to the Docker daemon</div>
+        <strong>Cause :</strong> Le service Docker en arrière-plan n'est pas actif sur votre système.
+        <br><strong>Solution :</strong> Lancez la commande : <span class="table-code">sudo service docker start</span>
+    </div>
+
+    <div class="box box-danger">
+        <div class="box-title">❌ Erreur : Port already in use</div>
+        <strong>Cause :</strong> Le port extérieur choisi est déjà réservé par un autre service de l'hôte.
+        <br><strong>Solution :</strong> Modifiez le port de gauche lors du run (ex : basculez de <span class="table-code">-p 80:80</span> vers <span class="table-code">-p 8085:80</span>).
+    </div>
+
+    <div class="box box-danger">
+        <div class="box-title">❌ Erreur : No space left on device</div>
+        <strong>Cause :</strong> Accumulation excessive d'images obsolètes et de containers inactifs.
+        <br><strong>Solution :</strong> Purgez l'espace de stockage inutilisé.
+    </div>
+
+    <h2 class="section-title">Les 5 Règles d'Or du bon praticien</h2>
+    <ol>
+        <li><strong>Nommez systématiquement</strong> vos instances avec le flag <span class="table-code">--name</span>.</li>
+        <li><strong>Ne stockez aucune donnée sensible en dur</strong> dans vos conteneurs ; externalisez-les dans des volumes.</li>
+        <li><strong>Évitez les mots de passe clairs</strong> dans vos scripts publics. Adoptez des fichiers masqués d'environnement <span class="table-code">.env</span>.</li>
+        <li><strong>Utilisez Docker Compose</strong> dès lors que votre projet comporte au moins 2 architectures distinctes.</li>
+        <li><strong>Garantissez la résilience</strong> de vos applications majeures avec la politique de disponibilité <span class="table-code">--restart always</span>.</li>
+    </ol>
+
+    <h2 class="section-title">Commandes de nettoyage utiles</h2>
+    <div class="code-block">
+        <div class="code-header">Nettoyage global de l'espace disque</div>
+        <pre class="code-body"># Supprimer tous les éléments inutilisés d'un coup (containers arrêtés, images orphelines, réseaux)
+docker system prune -a --volumes
+
+# Analyser l'espace disque consommé par Docker
+docker system df</pre>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature-title">🐳 Guide de Conteneurisation Simplifié</div>
+        <div class="signature-sub">Conçu avec passion pour la communauté Open Source</div>
+        <div class="signature-author">— Wexlor —</div>
+        <div class="signature-meta">Version 1.0 | Mai 2026 | Dakar, Sénégal<br>Partage et distribution libre encouragés à des fins éducatives</div>
+    </div>
+
+</body>
+</html>
+"""
+
+# Write HTML content to file
+with open("/mnt/user-data/outputs/guide_docker.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+# Render HTML to PDF via WeasyPrint
+HTML("/mnt/user-data/outputs/guide_docker.html").write_pdf("/mnt/user-data/outputs/Guide_Docker_Complet.pdf")
+print("PDF fully compiled.")
