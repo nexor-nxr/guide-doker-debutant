@@ -1,0 +1,398 @@
+
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+            @top-right {
+                content: "Page " counter(page);
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                color: #718096;
+            }
+            @top-left {
+                content: "🐳 Guide Docker pour Débutants";
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 8pt;
+                font-weight: bold;
+                color: #1a365d;
+            }
+            @bottom-center {
+                content: "© 2026 Wexlor — Guide Docker v1.0 — Document Pédagogique Libre";
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 7.5pt;
+                color: #a0aec0;
+            }
+        }
+
+        @page:first {
+            margin: 0;
+            background-color: #0d3b66;
+            @top-right { content: normal; }
+            @top-left { content: normal; }
+            @bottom-center { content: normal; }
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 10.5pt;
+            line-height: 1.6;
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+
+        /* --- Page de Couverture --- */
+        .cover {
+            page-break-after: always;
+            height: 297mm;
+            position: relative;
+            background-color: #0d3b66;
+            color: #ffffff;
+            overflow: hidden;
+            padding: 40mm 20mm 20mm 20mm;
+            text-align: center;
+        }
+
+        .cover-circle-1 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background-color: #0b3460;
+            top: -100px;
+            right: -100px;
+            z-index: 1;
+        }
+
+        .cover-circle-2 {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-color: #0a2e55;
+            bottom: -50px;
+            left: -100px;
+            z-index: 1;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .cover-icon {
+            font-size: 65pt;
+            margin-bottom: 20px;
+            background: #0e4080;
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 2px solid #00b4d8;
+        }
+
+        .cover-title {
+            font-size: 42pt;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+        }
+
+        .cover-subtitle {
+            font-size: 22pt;
+            font-weight: 600;
+            color: #00b4d8;
+            margin: 0 0 30px 0;
+        }
+
+        .cover-description {
+            font-size: 13pt;
+            color: #aaccff;
+            margin: 0 auto 40mm auto;
+            max-width: 500px;
+            font-weight: 300;
+        }
+
+        .cover-divider {
+            width: 150px;
+            height: 3px;
+            background-color: #00b4d8;
+            margin: 0 auto 25px auto;
+        }
+
+        .cover-author {
+            font-size: 13pt;
+            font-style: italic;
+            color: #e2e8f0;
+            margin: 0 0 5px 0;
+        }
+
+        .cover-version {
+            font-size: 10.5pt;
+            color: #88aadd;
+        }
+
+        .cover-footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8.5pt;
+            color: #667799;
+            padding: 0 20px;
+        }
+
+        /* --- Table des matières --- */
+        .toc-page {
+            page-break-after: always;
+            padding-top: 10mm;
+        }
+
+        /* --- Styles Généraux --- */
+        h1 {
+            font-size: 20pt;
+            color: #0d3b66;
+            border-bottom: 3px solid #00b4d8;
+            padding-bottom: 6px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            page-break-after: avoid;
+        }
+
+        .chapter-header {
+            background-color: #e8f0fe;
+            border-left: 6px solid #1a73e8;
+            padding: 15px 20px;
+            margin-top: 35px;
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+        }
+
+        .chapter-header h2 {
+            margin: 0;
+            font-size: 16pt;
+            color: #0d3b66;
+        }
+
+        .chapter-num {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #1a73e8;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        h2.section-title {
+            font-size: 14pt;
+            color: #1a73e8;
+            margin-top: 25px;
+            margin-bottom: 12px;
+            page-break-after: avoid;
+        }
+
+        h3.subsection-title {
+            font-size: 11.5pt;
+            color: #0d3b66;
+            margin-top: 20px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 12px 0;
+            text-align: justify;
+        }
+
+        ul {
+            margin: 0 0 15px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        /* --- Tableaux --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0 25px 0;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #0d3b66;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px 12px;
+            border: 1px solid #0d3b66;
+        }
+
+        td {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+
+        .table-code {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #1a73e8;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* --- Blocs de Code --- */
+        .code-block {
+            background-color: #1e1e2e;
+            border-left: 4px solid #00b4d8;
+            border-radius: 0 6px 6px 0;
+            margin: 15px 0 25px 0;
+            overflow: hidden;
+            page-break-inside: avoid;
+        }
+
+        .code-header {
+            background-color: #2a2a3e;
+            color: #00b4d8;
+            font-size: 8.5pt;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        .code-body {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 9pt;
+            color: #cdd6f4;
+            padding: 12px 14px;
+            margin: 0;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        /* --- Boîtes d'alerte / info --- */
+        .box {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 15px 0 25px 0;
+            border-left: 4px solid;
+            page-break-inside: avoid;
+            font-size: 9.5pt;
+        }
+
+        .box-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 10pt;
+        }
+
+        .box-info {
+            background-color: #e8f0fe;
+            border-color: #1a73e8;
+            color: #0d3b66;
+        }
+        .box-info .box-title { color: #1a73e8; }
+
+        .box-tip {
+            background-color: #e8f8f0;
+            border-color: #2ecc71;
+            color: #1a4731;
+        }
+        .box-tip .box-title { color: #2ecc71; }
+
+        .box-warn {
+            background-color: #fef9e7;
+            border-color: #f39c12;
+            color: #7a3b00;
+        }
+        .box-warn .box-title { color: #f39c12; }
+
+        .box-danger {
+            background-color: #fdecea;
+            border-color: #e74c3c;
+            color: #b71c1c;
+        }
+        .box-danger .box-title { color: #e74c3c; }
+
+        /* --- TOC List --- */
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .toc-item {
+            margin-bottom: 12px;
+        }
+
+        .toc-chapter {
+            font-weight: bold;
+            color: #0d3b66;
+            font-size: 12pt;
+        }
+
+        .toc-sections {
+            list-style: none;
+            padding-left: 20px;
+            margin-top: 4px;
+            font-size: 10pt;
+            color: #4a5568;
+        }
+
+        .toc-sections li {
+            margin-bottom: 3px;
+        }
+
+        /* --- Fin / Signature --- */
+        .signature-section {
+            background-color: #0d3b66;
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 50px;
+            border-top: 4px solid #00b4d8;
+            border-bottom: 4px solid #00b4d8;
+            page-break-inside: avoid;
+        }
+
+        .signature-title {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .signature-sub {
+            font-size: 11pt;
+            color: #aaccff;
+            margin-bottom: 15px;
+        }
+
+        .signature-author {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #00b4d8;
+            margin-bottom: 10px;
+        }
+
+        .signature-meta {
+            font-size: 8.5pt;
+            color: #667799;
+        }
+   
